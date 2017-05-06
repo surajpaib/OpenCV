@@ -1,7 +1,7 @@
-#LemonRecognition
+# LemonRecognition
 
-##lemonrecog.ipynb
+## lemonrecog.ipynb
 Notebook with high level code of the solution
 
-##lemon.py
-Code contain modules with the algorithm 
+## lemon.py
+Code contain modules with the algorithm
