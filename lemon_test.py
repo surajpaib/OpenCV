@@ -50,7 +50,7 @@ class LemonRecognizer(object):
         params = cv2.SimpleBlobDetector_Params()
         # Detect circles
         params.filterByCircularity = True
-        params.minCircularity = 0.3
+        params.minCircularity = 0.15
         # Threshold for splitting images
         params.minThreshold = 200
         params.maxThreshold = 500
@@ -58,10 +58,10 @@ class LemonRecognizer(object):
         params.filterByColor = False
         # Filter by Convexity
         params.filterByConvexity = True
-        params.minConvexity = 0.1
+        params.minConvexity = 0.5
         # Filter by Inertia
         params.filterByInertia = True
-        params.minInertiaRatio = 0.001
+        params.minInertiaRatio = 0.1
         # Create a detector with the parameters
         detector = cv2.SimpleBlobDetector(params)
         # Detect blobs.
