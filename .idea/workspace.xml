@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="79c40243-4239-4e51-9f79-de5bd32a08cb" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lemon_test.py" afterPath="$PROJECT_DIR$/lemon_test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lemonrecog.ipynb" afterPath="$PROJECT_DIR$/lemonrecog.ipynb" />
-    </list>
+    <list default="true" id="79c40243-4239-4e51-9f79-de5bd32a08cb" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,7 +20,7 @@
         <entry file="file://$PROJECT_DIR$/lemonrecog.ipynb">
           <provider selected="true" editor-type-id="ipnb-editor">
             <state>
-              <selected id="7" />
+              <selected id="6" />
             </state>
           </provider>
         </entry>
@@ -661,7 +657,7 @@
     <entry file="file://$PROJECT_DIR$/lemonrecog.ipynb">
       <provider selected="true" editor-type-id="ipnb-editor">
         <state>
-          <selected id="7" />
+          <selected id="6" />
         </state>
       </provider>
     </entry>
