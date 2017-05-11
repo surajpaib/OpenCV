@@ -1,6 +1,8 @@
 """
 Lemon.py
 """
+import timeit
+import numpy as np
 import cv2
 import cv2.cv as cv
 
@@ -21,40 +23,52 @@ class LemonRecognizer(object):
         """
         return self.image
 
-    def get_min_enclosed_circle(self):
+    def convert_to_blob(self):
         """
         Use contours to find minimum enclosing circle to get an estimate for running hough transform
         :return: Minimum circle radius
         """
         hsv = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
-        # Extract Hue Value from HSV representation ( Taking lemon hue as a feature extractor )
-        img = hsv[:, :, 0]
-        # Blur image to remove noise
-        # im = cv2.blur(im, (3, 3))
-        img = cv2.bitwise_not(img)
+        # Get 3 images for H, S, and V
+        im1 = hsv[:, :, 0]
+        im2 = hsv[:, :, 1]
+        im3 = hsv[:, :, 2]
         # Use Otsu's method for automatic thresholding to convert to b/w image
-        _, bwimg = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        bwimg = cv2.blur(bwimg, (4, 4))
+        _, bw1 = cv2.threshold(im1, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        _, bw2 = cv2.threshold(im2, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        _, bw3 = cv2.threshold(im3, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        # Combine the Saturation and Value b/w image
+        concat = np.bitwise_and(bw2, bw3)
+        concat = cv2.blur(concat, (5, 5))
+        self.feature_image = concat
+        return bw1, bw2, bw3, concat
 
-        # Start finding contour using opencv contour library
-        contour, hierarchy = cv2.findContours(bwimg, cv.CV_RETR_TREE, cv.CV_CHAIN_APPROX_SIMPLE)
-        cnt = contour[0]
-        (x_coord, y_coord), self.radius = cv2.minEnclosingCircle(cnt)
-        self.feature_image = bwimg
-        return (x_coord, y_coord), self.radius
-
-    def hough_circle_transform(self):
+    def blob_detecter(self):
         """
-        Use hough circle method to find circles in the image to fit a given criteria ( In this case,
-        to find circles close to the minimum enclosed circle from contour estimation
+        Initializes and sets up OpenCV's Simple Blob Detector
         """
-        r_eff = int(self.radius)
-        circles = cv2.HoughCircles(self.feature_image, method=cv.CV_HOUGH_GRADIENT,
-                                   dp=5, minDist=int(r_eff * 0.5 + 1),
-                                   minRadius=int(r_eff - r_eff * 0.4),
-                                   maxRadius=int(r_eff + r_eff * 0.009),
-                                   param1=10, param2=int(2 * 3.14 * int(r_eff - r_eff * 0.57)))
-        self.circles = circles[0, :]
-        return self.circles
+        params = cv2.SimpleBlobDetector_Params()
+        # Detect circles
+        params.filterByCircularity = True
+        params.minCircularity = 0.3
+        # Threshold for splitting images
+        params.minThreshold = 200
+        params.maxThreshold = 500
+        # filter by color
+        params.filterByColor = False
+        # Filter by Convexity
+        params.filterByConvexity = True
+        params.minConvexity = 0.1
+        # Filter by Inertia
+        params.filterByInertia = True
+        params.minInertiaRatio = 0.001
+        # Create a detector with the parameters
+        detector = cv2.SimpleBlobDetector(params)
+        # Detect blobs.
+        keypoints = detector.detect(self.feature_image)
+        # Draw detected blobs as red circles.
+        # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle        corresponds to the size of blob
+        im_with_keypoints = cv2.drawKeypoints(self.image, keypoints, np.array([]), (255, 0, 0),
+                                              cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
-
+        return im_with_keypoints, keypoints
