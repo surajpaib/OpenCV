@@ -25,7 +25,7 @@ class LemonRecognizer(object):
 
     def convert_to_blob(self):
         """
-        Use contours to find minimum enclosing circle to get an estimate for running hough transform
+        Use HSV values to find blobs in the images
         :return: Minimum circle radius
         """
         hsv = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
@@ -66,9 +66,8 @@ class LemonRecognizer(object):
         detector = cv2.SimpleBlobDetector(params)
         # Detect blobs.
         keypoints = detector.detect(self.feature_image)
-        # Draw detected blobs as red circles.
-        # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle        corresponds to the size of blob
+        # Draw detected blobs as circles.
         im_with_keypoints = cv2.drawKeypoints(self.image, keypoints, np.array([]), (255, 0, 0),
                                               cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-
+        # Return image and keypoints
         return im_with_keypoints, keypoints
